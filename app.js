@@ -137,19 +137,6 @@ function arrayifyString(str) {
   return str.match(/.{1,2}/g) || [];
 }
 
-function splitArray(array) {
-  const middleIndex = Math.ceil(array.length / 2);
-  const firstHalf = array.slice(0, middleIndex);
-  const secondHalf = array.slice(middleIndex);
-
-  return [firstHalf, secondHalf];
-}
-
-function hashMessage(message) {
-  const hashedMessage = ethers.utils.hashMessage(message);
-  return hashedMessage;
-}
-
 const sendProof = async (_message) => {
   var message = _message
   var deadline = "9999999999"
@@ -178,32 +165,9 @@ const sendProof = async (_message) => {
         deadline: deadline,
     },
   });
+  console.log("msgParams:")
   console.log(msgParams)
-
-  console.log(0)
-  console.log(0)
-  console.log(0)
-
-  const messagex = "x";
-  const hashedMessagex = hashMessage(messagex);
-  console.log(hashedMessagex)
-
-  console.log("dois")
   
-  console.log(ethers.utils.hashMessage("{\"types\":{\"EIP712Domain\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"version\",\"type\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\"}],\"Greeting\":[{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"deadline\",\"type\":\"uint\"}]},\"primaryType\":\"Greeting\",\"domain\":{\"name\":\"Ether Mail\",\"version\":\"1\",\"chainId\":534351,\"verifyingContract\":\"0xc36e59a32E18C6dC9caCf64639de7cFfDE83BC5f\"},\"message\":{\"text\":\"asdf\",\"deadline\":\"9999999999\"}}"))
-  console.log(ethers.utils.hashMessage(msgParams))
-  console.log(ethers.utils.keccak256(
-    ethers.utils.toUtf8Bytes("\x19Ethereum Signed Message:\n1x")
-    ))
-  //0x3ef9a3d61fed6a33fff709f4d34ee92bffacc346e7e2233876018e2dde33faa8
-
-
-console.log(111)
-console.log(ethers.utils.hashMessage(msgParams))
-console.log(222)
-
-  //msgParams = "{\"types\":{\"EIP712Domain\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"version\",\"type\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\"}],\"Greeting\":[{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"deadline\",\"type\":\"uint\"}]},\"primaryType\":\"Greeting\",\"domain\":{\"name\":\"Ether Mail\",\"version\":\"1\",\"chainId\":534351,\"verifyingContract\":\"0xc36e59a32E18C6dC9caCf64639de7cFfDE83BC5f\"},\"message\":{\"text\":\"asdf\",\"deadline\":\"9999999999\"}}"
-
   var signature = await ethereum.request({
     method: "eth_signTypedData_v4",
     params: [accounts[0], msgParams],
@@ -214,7 +178,6 @@ console.log(222)
   console.log(hashedMessage)
   
   const hashedMessageArray = ethers.utils.arrayify(hashedMessage)
-  //arrayifyString(hashedMessage.substring(2)).map(hex => parseInt(hex, 16));
   console.log(hashedMessageArray);
   
   console.log("Signature: ")
@@ -232,7 +195,6 @@ console.log(222)
   const publicKeyArray = ethers.utils.arrayify("0x"+publicKey)
   //arrayifyString(publicKey.substring(2)).map(hex => parseInt(hex, 16));
   console.log(publicKeyArray);
-  //publicKeyArray.pop()//???
 
   let pub_key_x = publicKey.substring(0, 64);
   let pub_key_y = publicKey.substring(64);
@@ -266,12 +228,6 @@ console.log(222)
   //y = "0x" + "0".repeat(64-y.length) + y
   console.log("Proof")
   console.log(proof)
-  /*
-*/
-
-console.log(hashedMessage)
-console.log(hashedMessage)
-console.log(hashedMessage)
 
   var tHashedMessage = arrayifyString(hashedMessage.substring(2))
   for(var i=0; i<tHashedMessage.length; i++)
