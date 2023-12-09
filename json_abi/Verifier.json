@@ -1,60 +1,8 @@
 [
 	{
-		"inputs": [
-			{
-				"internalType": "bytes",
-				"name": "_proof",
-				"type": "bytes"
-			},
-			{
-				"internalType": "bytes32[]",
-				"name": "_publicInputs",
-				"type": "bytes32[]"
-			},
-			{
-				"internalType": "string",
-				"name": "addressString",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "sendProof",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_str1",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_str2",
-				"type": "string"
-			}
-		],
-		"name": "compareStrings",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "pure",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -98,11 +46,6 @@
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "stringAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
 				"name": "message",
 				"type": "string"
 			}
@@ -115,7 +58,7 @@
 				"type": "bytes32"
 			}
 		],
-		"stateMutability": "pure",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -146,11 +89,6 @@
 			},
 			{
 				"internalType": "string",
-				"name": "addressString",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
 				"name": "message",
 				"type": "string"
 			}
@@ -161,19 +99,6 @@
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
-			}
-		],
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "lowercasedString",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -212,27 +137,8 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "str",
-				"type": "string"
-			}
-		],
-		"name": "stringToUtf8Bytes",
-		"outputs": [
-			{
-				"internalType": "bytes",
-				"name": "",
-				"type": "bytes"
-			}
-		],
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
 		"inputs": [],
-		"name": "testii",
+		"name": "myAddress",
 		"outputs": [
 			{
 				"internalType": "string",
@@ -246,36 +152,40 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "x",
-				"type": "address"
-			}
-		],
-		"name": "toAsciiString",
-		"outputs": [
+				"internalType": "bytes",
+				"name": "_proof",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "_publicInputs",
+				"type": "bytes32[]"
+			},
 			{
 				"internalType": "string",
-				"name": "",
+				"name": "message",
 				"type": "string"
 			}
 		],
-		"stateMutability": "pure",
+		"name": "sendProof",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "_str",
+				"name": "str",
 				"type": "string"
 			}
 		],
-		"name": "toLowercase",
+		"name": "stringToUtf8Bytes",
 		"outputs": [
 			{
-				"internalType": "string",
+				"internalType": "bytes",
 				"name": "",
-				"type": "string"
+				"type": "bytes"
 			}
 		],
 		"stateMutability": "pure",

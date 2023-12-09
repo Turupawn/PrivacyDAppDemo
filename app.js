@@ -4,7 +4,7 @@ import circuit from './circuit/target/circuit.json';
 
 const NETWORK_ID = 534351
 
-const MY_CONTRACT_ADDRESS = "0x619b3dd058fB0c189af85fF23300fddA7beEB5F5"
+const MY_CONTRACT_ADDRESS = "0xf60c063E83a52d74233d97574Ff1266DC2dC6071"
 const MY_CONTRACT_ABI_PATH = "./json_abi/Verifier.json"
 var my_contract
 
@@ -283,7 +283,7 @@ console.log(hashedMessage)
 
 
   const result = await my_contract.methods.sendProof(proof
-  , tHashedMessage, MY_CONTRACT_ADDRESS, message)
+  , tHashedMessage, message)
   .send({ from: accounts[0], gas: 0, value: 0 })
   .on('transactionHash', function(hash){
     document.getElementById("web3_message").textContent="Executing...";
