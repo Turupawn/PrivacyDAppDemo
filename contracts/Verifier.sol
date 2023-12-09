@@ -5,20 +5,11 @@ interface IUltraVerifier {
     function verify(bytes calldata _proof, bytes32[] calldata _publicInputs) external view returns (bool);
 }
 
-contract MessageVerifier {
-
-// get my address begin
+// AddressToString by 0age on Stackoverflow
 //https://ethereum.stackexchange.com/questions/63908/address-checksum-solidity-implementation
-    string public myAddress;
-    constructor() {
-        myAddress = _toChecksumString(address(this));
-    }
-  
+library AddressToString {
 
-
-  function _toChecksumString(
-    address account
-  ) internal pure returns (string memory asciiString) {
+  function toChecksumString( address account) external pure returns (string memory asciiString) {
     // convert the account argument from address to bytes.
     bytes20 data = bytes20(account);
 
@@ -63,9 +54,7 @@ contract MessageVerifier {
     return string(asciiBytes);
   }
 
-  function _toChecksumCapsFlags(address account) internal pure returns (
-    bool[40] memory characterCapitalized
-  ) {
+  function _toChecksumCapsFlags(address account) internal pure returns (bool[40] memory characterCapitalized) {
     // convert the address to bytes.
     bytes20 a = bytes20(account);
 
@@ -97,9 +86,7 @@ contract MessageVerifier {
     }
   }
 
-  function _getAsciiOffset(
-    uint8 nibble, bool caps
-  ) internal pure returns (uint8 offset) {
+  function _getAsciiOffset(uint8 nibble, bool caps) internal pure returns (uint8 offset) {
     // to convert to ascii characters, add 48 to 0-9, 55 to A-F, & 87 to a-f.
     if (nibble < 10) {
       offset = 48;
@@ -112,9 +99,7 @@ contract MessageVerifier {
 
 
   // based on https://ethereum.stackexchange.com/a/56499/48410
-  function _toAsciiString(
-    bytes20 data
-  ) internal pure returns (string memory asciiString) {
+  function _toAsciiString(bytes20 data) internal pure returns (string memory asciiString) {
     // create an in-memory fixed-size bytes array.
     bytes memory asciiBytes = new bytes(40);
 
@@ -137,15 +122,12 @@ contract MessageVerifier {
 
     return string(asciiBytes);
   }
-//get my address end
+}
 
 
-
-    function stringToUtf8Bytes(string memory str) public pure returns (bytes memory) {
-        return bytes(str);
-    }
-
-    // This is from Openzeppelin
+// Original code from OpenZeppelin
+// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Strings.sol
+library UintToString {
     function log10(uint256 value) internal pure returns (uint256) {
         uint256 result = 0;
         unchecked {
@@ -182,7 +164,7 @@ contract MessageVerifier {
 
     bytes16 private constant HEX_DIGITS = "0123456789abcdef";
 
-    function toStringg(uint256 value) internal pure returns (string memory) {
+    function toString(uint256 value) internal pure returns (string memory) {
         unchecked {
             uint256 length = log10(value) + 1;
             string memory buffer = new string(length);
@@ -203,33 +185,9 @@ contract MessageVerifier {
             return buffer;
         }
     }
+}
 
-
-    function getLength(string memory s) public pure returns (uint256)  
-    { 
-        bytes memory b = bytes(s); 
-        return b.length; 
-    } 
-
-    function hashMessageX(string memory message) public pure returns (bytes32) {
-        uint messageLength = bytes(message).length;
-        bytes32 hashedMessage = keccak256(abi.encodePacked(
-            "\x19Ethereum Signed Message:\n", toStringg(messageLength), message
-            ));
-        return hashedMessage;
-    }
-    function hashMessage(string memory message) public view returns (bytes32) {
-        string memory a = "{\"types\":{\"EIP712Domain\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"version\",\"type\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\"}],\"Greeting\":[{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"deadline\",\"type\":\"uint\"}]},\"primaryType\":\"Greeting\",\"domain\":{\"name\":\"Ether Mail\",\"version\":\"1\",\"chainId\":534351,\"verifyingContract\":\"0x";
-        string memory a2 = "\"},\"message\":{\"text\":\"";
-        string memory b = "\",\"deadline\":\"9999999999\"}}";
-        return hashMessageX(string(abi.encodePacked(a,myAddress,a2,message, b)));
-    }
-
-    function isValidHash(bytes32 hash, string memory message) public view returns(bool) {
-        return hash == hashMessage(message);
-    }
-
-
+library ConcatenateHexArray {
     function concatenateHexArray(bytes32[] memory hexArray) public pure returns (bytes32) {
         bytes32 result;
         for (uint256 i = 0; i < hexArray.length; i++) {
@@ -237,21 +195,40 @@ contract MessageVerifier {
         }
         return result;
     }
+}
 
-
-
-
+contract MessageVerifier {
     uint public messageAmount;
     mapping(uint messageId => string message) public messages;
-
     IUltraVerifier ultraVerifier = IUltraVerifier(0xCb7CfCdF413B803188c1536c09cEB15FC6F75866);
+
+    string public myAddress;
+    string public messageHeader;
+    string public messagePrefix;
+    string public messageSuffix;
+    constructor() {
+        myAddress = AddressToString.toChecksumString(address(this));
+        messageHeader = "\x19Ethereum Signed Message:\n";
+        messagePrefix = string(abi.encodePacked(
+                "{\"types\":{\"EIP712Domain\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"version\",\"type\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\"}],\"Greeting\":[{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"deadline\",\"type\":\"uint\"}]},\"primaryType\":\"Greeting\",\"domain\":{\"name\":\"Ether Mail\",\"version\":\"1\",\"chainId\":534351,\"verifyingContract\":\"0x",
+                myAddress,
+                "\"},\"message\":{\"text\":\""));
+        messageSuffix = "\",\"deadline\":\"9999999999\"}}";
+    }
+
+    function isValidHash(bytes32 hash, string memory message) public view returns(bool) {
+        string memory jsonMessage = string(abi.encodePacked(messagePrefix, message, messageSuffix));
+        return hash == keccak256(abi.encodePacked(
+            messageHeader,
+            UintToString.toString(bytes(jsonMessage).length),
+            jsonMessage));
+    }
 
     function sendProof(bytes calldata _proof, bytes32[] calldata _publicInputs, string memory message) public
     {
-        require(isValidHash(concatenateHexArray(_publicInputs), message), "Invalid message hash");
+        require(isValidHash(ConcatenateHexArray.concatenateHexArray(_publicInputs), message), "Invalid message hash");
         ultraVerifier.verify(_proof, _publicInputs);
         messages[messageAmount] = message;
         messageAmount+=1;
     }
-
 }

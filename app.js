@@ -4,7 +4,7 @@ import circuit from './circuit/target/circuit.json';
 
 const NETWORK_ID = 534351
 
-const MY_CONTRACT_ADDRESS = "0xf60c063E83a52d74233d97574Ff1266DC2dC6071"
+const MY_CONTRACT_ADDRESS = "0xAA6518454A974B65172b5C20428C4d98Adf765f1"
 const MY_CONTRACT_ABI_PATH = "./json_abi/Verifier.json"
 var my_contract
 
@@ -133,11 +133,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadDapp()
 });
 
-function arrayifyString(str) {
+function splitIntoPairs(str) {
   return str.match(/.{1,2}/g) || [];
 }
 
 const sendProof = async (_message) => {
+  document.getElementById("web3_message").textContent="Please sign the message ✍️";
   var message = _message
   var deadline = "9999999999"
   var msgParams = JSON.stringify({
@@ -165,81 +166,47 @@ const sendProof = async (_message) => {
         deadline: deadline,
     },
   });
-  console.log("msgParams:")
-  console.log(msgParams)
   
   var signature = await ethereum.request({
     method: "eth_signTypedData_v4",
     params: [accounts[0], msgParams],
   });
 
-  console.log("Hashed message: ")
-  var hashedMessage = ethers.utils.hashMessage(msgParams)
-  console.log(hashedMessage)
-  
+  var hashedMessage = ethers.utils.hashMessage(msgParams)  
   const hashedMessageArray = ethers.utils.arrayify(hashedMessage)
-  console.log(hashedMessageArray);
   
-  console.log("Signature: ")
-  console.log(signature)
-
-  const signatureArray = ethers.utils.arrayify(signature)
-  //arrayifyString(signature.substring(2)).map(hex => parseInt(hex, 16));
-  console.log(signatureArray);
-
-  console.log("Public key:")
   var publicKey = ethers.utils.recoverPublicKey(hashedMessage, signature)
-  console.log(publicKey)
   publicKey = publicKey.substring(4)
   
-  const publicKeyArray = ethers.utils.arrayify("0x"+publicKey)
-  //arrayifyString(publicKey.substring(2)).map(hex => parseInt(hex, 16));
-  console.log(publicKeyArray);
-
   let pub_key_x = publicKey.substring(0, 64);
   let pub_key_y = publicKey.substring(64);
-  let arrayX = ethers.utils.arrayify("0x"+pub_key_x)
-  let arrayY = ethers.utils.arrayify("0x"+pub_key_y)
   
-  console.log(arrayX)
-  console.log(arrayY)
-
   const backend = new BarretenbergBackend(circuit);
   const noir = new Noir(circuit, backend);
 
-  var sArrayX = Array.from(arrayX)
-  var sArrayY = Array.from(arrayY)
-  var sSignature = Array.from(signatureArray)
-  var sHashedMessage = Array.from(hashedMessageArray)
+  var sSignature = Array.from(ethers.utils.arrayify(signature))
   sSignature.pop()
   
   const input = {
-    pub_key_x: Array.from(sArrayX),
-    pub_key_y: Array.from(arrayY),
+    pub_key_x: Array.from(ethers.utils.arrayify("0x"+pub_key_x)),
+    pub_key_y: Array.from(ethers.utils.arrayify("0x"+pub_key_y)),
     signature: sSignature,
     hashed_message: Array.from(hashedMessageArray)
   };
+
   document.getElementById("web3_message").textContent="Generating proof... ⌛";
   var proof = await noir.generateFinalProof(input);
   document.getElementById("web3_message").textContent="Generating proof... ✅";
   
   proof = "0x" + ethereumjs.Buffer.Buffer.from(proof.proof).toString('hex')
-  //y = ethereumjs.Buffer.Buffer.from([y]).toString('hex')
-  //y = "0x" + "0".repeat(64-y.length) + y
-  console.log("Proof")
-  console.log(proof)
 
-  var tHashedMessage = arrayifyString(hashedMessage.substring(2))
+  var tHashedMessage = splitIntoPairs(hashedMessage.substring(2))
   for(var i=0; i<tHashedMessage.length; i++)
   {
     tHashedMessage[i] = "0x00000000000000000000000000000000000000000000000000000000000000" + tHashedMessage[i]
   }
 
-  console.log(tHashedMessage)
-
-
-  const result = await my_contract.methods.sendProof(proof
-  , tHashedMessage, message)
+  const result = await my_contract.methods.sendProof(proof, tHashedMessage, message)
   .send({ from: accounts[0], gas: 0, value: 0 })
   .on('transactionHash', function(hash){
     document.getElementById("web3_message").textContent="Executing...";
@@ -249,21 +216,5 @@ const sendProof = async (_message) => {
   .catch((revertReason) => {
     console.log("ERROR! Transaction reverted: " + revertReason.receipt.transactionHash)
   });
-  /*
-
-    document.getElementById("public_input").textContent = "public input: " + y
-    document.getElementById("proof").textContent = "proof: " + proof
-
-    const result = await my_contract.methods.sendProof(proof, [y])
-    .send({ from: accounts[0], gas: 0, value: 0 })
-    .on('transactionHash', function(hash){
-      document.getElementById("web3_message").textContent="Executing...";
-    })
-    .on('receipt', function(receipt){
-      document.getElementById("web3_message").textContent="Success.";    })
-    .catch((revertReason) => {
-      console.log("ERROR! Transaction reverted: " + revertReason.receipt.transactionHash)
-    });
-    */
 }
 window.sendProof=sendProof;
