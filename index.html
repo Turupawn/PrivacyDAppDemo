@@ -7,12 +7,13 @@
   <p id="web3_message"></p>
   <p id="contract_state"></p>
 
-  <h3>Send a message</h3>
-  message: <input type="input"  value="" id="_message"></input>
+  <h3>Send a comment</h3>
+  title: <input type="input"  value="" id="_title"></input>
+  text: <input type="input"  value="" id="_text"></input>
   <input type="button" value="Send" onclick="_sendProof()"></input>
 
-  <h3>Messages</h3>
-  <div id="messages"></div>
+  <h3>Comments</h3>
+  <div id="comments"></div>
 
   <p id="public_input"></p>
   <p id="proof"></p>
@@ -26,8 +27,9 @@
 <script>
   function _sendProof()
   {
-    _message = document.getElementById("_message").value
-    sendProof(_message)
+    _title = document.getElementById("_title").value
+    _text = document.getElementById("_text").value
+    sendProof(_title, _text)
   }
 </script>
 

@@ -4,7 +4,7 @@ import circuit from './circuit/target/circuit.json';
 
 const NETWORK_ID = 534351
 
-const MY_CONTRACT_ADDRESS = "0xAA6518454A974B65172b5C20428C4d98Adf765f1"
+const MY_CONTRACT_ADDRESS = "0x47f7cc452226b55E42aA949EC62438307fBdA71d"
 const MY_CONTRACT_ABI_PATH = "./json_abi/Verifier.json"
 var my_contract
 
@@ -104,19 +104,29 @@ async function connectWallet() {
 window.connectWallet=connectWallet;
 
 const onContractInitCallback = async () => {
-  var messageAmount = await my_contract.methods.messageAmount().call()
-  var contract_state = "messageAmount: " + messageAmount
+  var commentAmount = await my_contract.methods.commentAmount().call()
+  var contract_state = "commentAmount: " + commentAmount
   
   var maxMsgPerPage = 5;
   var pageIterator = 0;
-  var messagesElement = document.getElementById("messages");
+  var commentsElement = document.getElementById("comments");
 
-  for(var i=parseInt(messageAmount);i>0;i--)
+  for(var i=parseInt(commentAmount);i>0;i--)
   {
-    var message = await my_contract.methods.messages(i-1).call()
+    var title = await my_contract.methods.titles(i-1).call()
+    var text = await my_contract.methods.texts(i-1).call()
     var paragraph = document.createElement("p");
-    paragraph.textContent = "Anon: " + message;
-    messagesElement.appendChild(paragraph);
+    var boldElement = document.createElement("b");
+    var textElement = document.createElement("span");
+    var brElement = document.createElement("br");
+    var titleElement = document.createElement("span");
+    titleElement.textContent = title;
+    textElement.textContent = text;
+    boldElement.appendChild(titleElement);
+    paragraph.appendChild(boldElement);
+    paragraph.appendChild(brElement);
+    paragraph.appendChild(textElement);
+    commentsElement.appendChild(paragraph);
     pageIterator++
     if(pageIterator >= maxMsgPerPage)
     {
@@ -137,10 +147,8 @@ function splitIntoPairs(str) {
   return str.match(/.{1,2}/g) || [];
 }
 
-const sendProof = async (_message) => {
+const sendProof = async (title, text) => {
   document.getElementById("web3_message").textContent="Please sign the message ✍️";
-  var message = _message
-  var deadline = "9999999999"
   var msgParams = JSON.stringify({
     types: {
         EIP712Domain: [
@@ -149,21 +157,21 @@ const sendProof = async (_message) => {
             { name: 'chainId', type: 'uint256' },
             { name: 'verifyingContract', type: 'address' },
         ],
-        Greeting: [
-            { name: 'text', type: 'string' },
-            { name: 'deadline', type: 'uint' }
+        Comment: [
+            { name: 'title', type: 'string' },
+            { name: 'text', type: 'string' }
         ],
     },
-    primaryType: 'Greeting',
+    primaryType: 'Comment',
     domain: {
-        name: 'Ether Mail',
+        name: 'Anon Message Board',
         version: '1',
         chainId: NETWORK_ID,
         verifyingContract: MY_CONTRACT_ADDRESS,
     },
     message: {
-        text: message,
-        deadline: deadline,
+        title: title,
+        text: text,
     },
   });
   
@@ -206,7 +214,7 @@ const sendProof = async (_message) => {
     tHashedMessage[i] = "0x00000000000000000000000000000000000000000000000000000000000000" + tHashedMessage[i]
   }
 
-  const result = await my_contract.methods.sendProof(proof, tHashedMessage, message)
+  const result = await my_contract.methods.sendProof(proof, tHashedMessage, title, text)
   .send({ from: accounts[0], gas: 0, value: 0 })
   .on('transactionHash', function(hash){
     document.getElementById("web3_message").textContent="Executing...";
