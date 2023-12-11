@@ -31,6 +31,8 @@ npm install
 npm start
 ```
 
+The webapp will automatically open on your browser.
+
 ## ⚠️Known issues (PRs welcome)
 
 * The relayer is using an old Alchemy web3 wrapper, we need to upgrade it to the newer ethers.js version
