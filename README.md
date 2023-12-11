@@ -6,12 +6,12 @@ This demo shows all the parts needed to create a privacy preserving on-chain DAp
 
 | Feature | Supported |
 |----------|------------ |
-| Aztec Noir Circuit | ✔ |
-| Solidity Verifier | ✔ |
-| EIP712 Enabled | ✔ |
-| WASM Prover | ✔ |
-| Node.js Relayer | ✔ |
-| MIT license | ✔ |
+| Aztec Noir Circuit | ✅ |
+| Solidity Verifier | ✅ |
+| EIP712 Enabled | ✅ |
+| WASM Prover | ✅ |
+| Node.js Relayer | ✅ |
+| MIT license | ✅ |
 
 ## How to launch
 
