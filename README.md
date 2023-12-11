@@ -30,3 +30,8 @@ cd webapp
 npm install
 npm start
 ```
+
+## Known issues (PRs welcomed)
+
+* The relayer is using an old Alchemy web3 wrapper, we need to upgrade it to the newer ethers.js version
+* We need to compress the hashed message params to reduce L1 fees on L2s. We should use [this](https://github.com/Bank-of-JubJub/base/blob/2a0247a441463a6619cc8d5f13d81717d166b770/hardhat/contracts/UsingAccountControllers.sol#L158) and [this](https://github.com/Bank-of-JubJub/base/blob/master/circuits/change_eth_signer/src/main.nr)
