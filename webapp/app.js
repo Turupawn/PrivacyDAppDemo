@@ -1,11 +1,14 @@
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import { Noir } from '@noir-lang/noir_js';
-import circuit from './circuit/target/circuit.json';
+import circuit from '../circuit/target/circuit.json';
 
-const NETWORK_ID = 534351
+const NETWORK_ID = process.env.CHAIN_ID
 
-const MY_CONTRACT_ADDRESS = "0x47f7cc452226b55E42aA949EC62438307fBdA71d"
-const MY_CONTRACT_ABI_PATH = "./json_abi/Verifier.json"
+const METADA_API_URL = "http://localhost:8080"
+
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+
+const MY_CONTRACT_ABI_PATH = "../json_abi/CommentVerifier.json"
 var my_contract
 
 var accounts
@@ -69,7 +72,7 @@ async function loadDapp() {
     web3.eth.net.getId((err, netId) => {
       if (netId == NETWORK_ID) {
         var awaitContract = async function () {
-          my_contract = await getContract(web3, MY_CONTRACT_ADDRESS, MY_CONTRACT_ABI_PATH)
+          my_contract = await getContract(web3, CONTRACT_ADDRESS, MY_CONTRACT_ABI_PATH)
           document.getElementById("web3_message").textContent="You are connected to Metamask"
           onContractInitCallback()
           web3.eth.getAccounts(function(err, _accounts){
@@ -167,7 +170,7 @@ const sendProof = async (title, text) => {
         name: 'Anon Message Board',
         version: '1',
         chainId: NETWORK_ID,
-        verifyingContract: MY_CONTRACT_ADDRESS,
+        verifyingContract: CONTRACT_ADDRESS,
     },
     message: {
         title: title,
@@ -214,6 +217,9 @@ const sendProof = async (title, text) => {
     tHashedMessage[i] = "0x00000000000000000000000000000000000000000000000000000000000000" + tHashedMessage[i]
   }
 
+  await updateMetadata(proof, tHashedMessage, title, text)
+
+  /*
   const result = await my_contract.methods.sendProof(proof, tHashedMessage, title, text)
   .send({ from: accounts[0], gas: 0, value: 0 })
   .on('transactionHash', function(hash){
@@ -224,5 +230,18 @@ const sendProof = async (title, text) => {
   .catch((revertReason) => {
     console.log("ERROR! Transaction reverted: " + revertReason.receipt.transactionHash)
   });
+  */
+
+
 }
+
+const updateMetadata = async (proof, hashedMessage, title, text) => {
+  fetch(METADA_API_URL + "/relay?proof=" + proof + "&hashedMessage=" + hashedMessage + "&title=" + title + "&text=" + text)
+  .then(res => res.json())
+  .then(out =>
+    console.log(out))
+  .catch();
+}
+
+
 window.sendProof=sendProof;

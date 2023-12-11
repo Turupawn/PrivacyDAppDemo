@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import copy from 'rollup-plugin-copy';
 import fs from 'fs';
 import path from 'path';
+import EnvironmentPlugin from 'vite-plugin-environment'
 
 const wasmContentTypePlugin = {
   name: 'wasm-content-type-plugin',
@@ -29,6 +30,7 @@ export default defineConfig(({ command }) => {
           hook: 'buildStart',
         }),
         command === 'serve' ? wasmContentTypePlugin : [],
+        EnvironmentPlugin(['CONTRACT_ADDRESS','CHAIN_ID']),
       ],
     };
   }
