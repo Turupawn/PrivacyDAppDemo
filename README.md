@@ -1,16 +1,17 @@
 # On-chain Privacy DApp Demo
 
-This demo shows all the parts needed to create a privacy preserving on-chain DApp.
+This demo showcases all the parts needed to create a privacy preserving DApp with good UX.
 
 ## ⭐Features
 
 | Feature | Supported |
 |----------|------------ |
-| Aztec Noir Circuit | ✅ |
-| Solidity Verifier | ✅ |
-| EIP712 Enabled | ✅ |
-| WASM Prover | ✅ |
-| Node.js Relayer | ✅ |
+| Aztec Noir circuit | ✅ |
+| Solidity verifier | ✅ |
+| ECDSA verification circuit | ✅ |
+| EIP712 enabled | ✅ |
+| Prover on browser (WASM) | ✅ |
+| Node.js relayer | ✅ |
 | MIT license | ✅ |
 
 ## 🚀How to launch
