@@ -169,7 +169,7 @@ const sendProof = async (title, text) => {
     domain: {
         name: 'Anon Message Board',
         version: '1',
-        chainId: NETWORK_ID,
+        chainId: parseInt(NETWORK_ID),
         verifyingContract: CONTRACT_ADDRESS,
     },
     message: {
@@ -185,7 +185,7 @@ const sendProof = async (title, text) => {
 
   var hashedMessage = ethers.utils.hashMessage(msgParams)  
   const hashedMessageArray = ethers.utils.arrayify(hashedMessage)
-  
+
   var publicKey = ethers.utils.recoverPublicKey(hashedMessage, signature)
   publicKey = publicKey.substring(4)
   
@@ -216,6 +216,9 @@ const sendProof = async (title, text) => {
   {
     tHashedMessage[i] = "0x00000000000000000000000000000000000000000000000000000000000000" + tHashedMessage[i]
   }
+
+
+
 
   await updateMetadata(proof, tHashedMessage, title, text)
 
