@@ -6,21 +6,18 @@ import { ethers } from 'ethers';
 
 const app = express()
 dotenv.config();
+app.use(cors())
 
 const JSON_CONTRACT_PATH = "./json_abi/CommentVerifier.json"
 const PORT = 8080
-var contract = null
+var contract
 var provider
 var signer
-var ABI
-
-app.use(cors())
 
 const { RPC_URL, CONTRACT_ADDRESS, RELAYER_PRIVATE_KEY, RELAYER_ADDRESS } = process.env;
 
 const loadContract = async (data) => {
   data = JSON.parse(data);
-  ABI = data
   contract = new ethers.Contract(CONTRACT_ADDRESS, data, signer);
 }
 
@@ -40,30 +37,21 @@ async function initAPI() {
   })
 }
 
-async function relayMessage(proof, tHashedMessage, title, text)
+async function relayMessage(proof, hashedMessage, title, text)
 {
-  // Get the nonce
-  const nonce = await provider.getTransactionCount(RELAYER_ADDRESS);
-
-  // Transaction details
   const transaction = {
     from: RELAYER_ADDRESS,
     to: CONTRACT_ADDRESS,
-    value: '0', // Set the value in Ether if needed
-    gasPrice: "700000000",
-    nonce: nonce,
+    value: '0',
+    gasPrice: "700000000", // 0.7 gwei
+    nonce: await provider.getTransactionCount(RELAYER_ADDRESS),
     chainId: "534351",
     data: contract.interface.encodeFunctionData(
-      "sendProof",[proof, tHashedMessage, title, text]
+      "sendProof",[proof, hashedMessage, title, text]
     )
   };
-
-  // Sign the transaction
   const signedTransaction = await signer.populateTransaction(transaction);
-
-  // Send the signed transaction
   const transactionResponse = await signer.sendTransaction(signedTransaction);
-
   console.log('🎉 The hash of your transaction is:', transactionResponse.hash);
 }
 
