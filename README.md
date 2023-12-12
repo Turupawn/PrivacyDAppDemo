@@ -1,6 +1,12 @@
 # On-chain Privacy DApp Demo
 
-This demo showcases all the parts needed to create a privacy preserving DApp with good UX.
+This demo showcases all the parts needed to create a privacy preserving DApp with good UX which are:
+* A circuit
+* A smart contract
+* A relayer
+* A webapp
+
+On this example we do a simple anonymous message board but it can be extended for other DApps in other fields such as DeFi, voting & governance, identity, etc..
 
 ## ⭐Features
 
