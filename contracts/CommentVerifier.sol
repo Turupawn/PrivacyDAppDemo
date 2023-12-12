@@ -199,7 +199,11 @@ contract CommentVerifier is Utils {
     uint public commentAmount;
     mapping(uint commentId => string title) public titles;
     mapping(uint commentId => string text) public texts;
-    IUltraVerifier ultraVerifier = IUltraVerifier(0xCb7CfCdF413B803188c1536c09cEB15FC6F75866);
+    IUltraVerifier ultraVerifier;
+
+    constructor(address verifierAddress) {
+        ultraVerifier = IUltraVerifier(verifierAddress);
+    }
 
     string public myAddress;
     string public messageHeader;
