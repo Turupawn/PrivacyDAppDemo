@@ -11,7 +11,7 @@ This demo showcases all the parts needed to create a privacy preserving DApp wit
 | ECDSA verification circuit | ✅ |
 | EIP712 enabled | ✅ |
 | Prover on browser (WASM) | ✅ |
-| Node.js relayer | ✅ |
+| Ethers.js 6.9 relayer | ✅ |
 | MIT license | ✅ |
 
 ## 🚀How to launch
