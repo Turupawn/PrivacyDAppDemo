@@ -8,7 +8,7 @@ This demo showcases all the parts needed to create a privacy preserving DApp wit
 
 On this example we do a simple anonymous message board but it can be extended for other DApps in other fields such as DeFi, voting & governance, identity, etc..
 
-![Privacy zkDApp screenshot](https://raw.githubusercontent.com/Turupawn/PrivacyDAppDemo/master/)
+![Privacy zkDApp screenshot](https://raw.githubusercontent.com/Turupawn/PrivacyDAppDemo/master/screenshot.png)
 
 ## ⭐Features
 
