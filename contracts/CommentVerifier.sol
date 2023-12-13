@@ -201,16 +201,15 @@ contract CommentVerifier is Utils {
     mapping(uint commentId => string text) public texts;
     IUltraVerifier ultraVerifier;
 
-    constructor(address verifierAddress) {
-        ultraVerifier = IUltraVerifier(verifierAddress);
-    }
-
     string public myAddress;
     string public messageHeader;
     string public messagePrefix;
     string public messageMiddlefix;
     string public messageSuffix;
-    constructor() {
+
+    constructor(address verifierAddress) {
+        ultraVerifier = IUltraVerifier(verifierAddress);
+
         myAddress = toChecksumString(address(this));
         messageHeader = "\x19Ethereum Signed Message:\n";
         messagePrefix = string(abi.encodePacked(

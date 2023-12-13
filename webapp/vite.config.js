@@ -30,7 +30,7 @@ export default defineConfig(({ command }) => {
           hook: 'buildStart',
         }),
         command === 'serve' ? wasmContentTypePlugin : [],
-        EnvironmentPlugin(['CONTRACT_ADDRESS','CHAIN_ID']),
+        EnvironmentPlugin(['COMMENT_VERIFIER_ADDRESS','CHAIN_ID']),
       ],
     };
   }

@@ -6,7 +6,7 @@ const NETWORK_ID = process.env.CHAIN_ID
 
 const METADA_API_URL = "http://localhost:8080"
 
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const COMMENT_VERIFIER_ADDRESS = process.env.COMMENT_VERIFIER_ADDRESS;
 
 const MY_CONTRACT_ABI_PATH = "../json_abi/CommentVerifier.json"
 var my_contract
@@ -72,7 +72,7 @@ async function loadDapp() {
     web3.eth.net.getId((err, netId) => {
       if (netId == NETWORK_ID) {
         var awaitContract = async function () {
-          my_contract = await getContract(web3, CONTRACT_ADDRESS, MY_CONTRACT_ABI_PATH)
+          my_contract = await getContract(web3, COMMENT_VERIFIER_ADDRESS, MY_CONTRACT_ABI_PATH)
           document.getElementById("web3_message").textContent="You are connected to Metamask"
           onContractInitCallback()
           web3.eth.getAccounts(function(err, _accounts){
@@ -170,7 +170,7 @@ const sendProof = async (title, text) => {
         name: 'Anon Message Board',
         version: '1',
         chainId: parseInt(NETWORK_ID),
-        verifyingContract: CONTRACT_ADDRESS,
+        verifyingContract: COMMENT_VERIFIER_ADDRESS,
     },
     message: {
         title: title,

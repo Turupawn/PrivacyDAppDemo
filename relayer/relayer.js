@@ -14,11 +14,11 @@ var contract
 var provider
 var signer
 
-const { RPC_URL, CONTRACT_ADDRESS, RELAYER_PRIVATE_KEY, RELAYER_ADDRESS } = process.env;
+const { RPC_URL, COMMENT_VERIFIER_ADDRESS, RELAYER_PRIVATE_KEY, RELAYER_ADDRESS } = process.env;
 
 const loadContract = async (data) => {
   data = JSON.parse(data);
-  contract = new ethers.Contract(CONTRACT_ADDRESS, data, signer);
+  contract = new ethers.Contract(COMMENT_VERIFIER_ADDRESS, data, signer);
 }
 
 async function initAPI() {
@@ -41,7 +41,7 @@ async function relayMessage(proof, hashedMessage, title, text)
 {
   const transaction = {
     from: RELAYER_ADDRESS,
-    to: CONTRACT_ADDRESS,
+    to: COMMENT_VERIFIER_ADDRESS,
     value: '0',
     gasPrice: "700000000", // 0.7 gwei
     nonce: await provider.getTransactionCount(RELAYER_ADDRESS),
