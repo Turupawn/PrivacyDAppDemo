@@ -1,3 +1,5 @@
+# Not maintained anymore, migrated [here](https://github.com/Turupawn/EcrecoverInclusionProof)
+
 # On-chain Privacy DApp Demo
 
 This demo showcases all the parts needed to create a privacy preserving DApp with good UX which are:
