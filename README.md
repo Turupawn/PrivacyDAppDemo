@@ -1,4 +1,4 @@
-# Not maintained anymore, migrated [here](https://github.com/Turupawn/EcrecoverInclusionProof)
+# ⚠️Not maintained anymore, migrated [here](https://github.com/Turupawn/EcrecoverInclusionProof)⚠️
 
 # On-chain Privacy DApp Demo
 
